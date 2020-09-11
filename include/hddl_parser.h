@@ -59,7 +59,6 @@ struct HDDLDomain
 
     std::string domain_name_;
     std::vector<std::string> domain_requirements_;
-    std::vector<std::string> temp_instances_;
     std::map<std::string, std::string> domain_types_;
     std::vector<Predicate> domain_predicates_;
     std::vector<std::string> domain_functions_;

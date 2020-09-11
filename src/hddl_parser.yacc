@@ -34,6 +34,7 @@
     Predicate temp_predicate;
     keyValueParams temp_params;
     std::vector<std::string> temp_args;
+    std::vector<std::string> temp_instances;
     int count = 0;
 }
 
@@ -124,15 +125,15 @@ types:
 types_content:
     | types_content instances HYPHEN STRING
     {
-        while (hddl_parser.domain_.temp_instances_.size() > 0) {
-            hddl_parser.domain_.domain_types_[hddl_parser.domain_.temp_instances_.back()] = $4;
-            hddl_parser.domain_.temp_instances_.pop_back();
+        while (temp_instances.size() > 0) {
+            hddl_parser.domain_.domain_types_[temp_instances.back()] = $4;
+            temp_instances.pop_back();
         }
     }
 
 /* allow multiple strings (instances) e.g. kitchen bedroom */
 instances:
-    | instances STRING { hddl_parser.domain_.temp_instances_.push_back($2);}
+    | instances STRING { temp_instances.push_back($2);}
 
 /* (:predicates pred1 pred2) */
 predicates:
