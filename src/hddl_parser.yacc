@@ -141,21 +141,22 @@ predicates:
 
 /* allow multiple predicates, e.g. (robot_at ?r - robot ?l - location) */
 preds:
-    | preds LPAREN STRING predicate_params RPAREN {
+    | preds LPAREN STRING params RPAREN {
         temp_predicate.name = $3;
+        temp_predicate.pred_params = temp_params;
         hddl_parser.domain_.domain_predicates_.push_back(temp_predicate);
 
         /* reset */
-        temp_predicate.pred_params.clear();
+        temp_params.clear();
         temp_args.clear();
         count = 0;
     }
 
 /* allow multiple params,   e.g. ?r - robot ?source ?destination - location */
-predicate_params:
-    | predicate_params keys HYPHEN STRING {
+params:
+    | params keys HYPHEN STRING {
         for(int i=0; i < count; i++) {
-            temp_predicate.pred_params.push_back(std::pair<std::string, std::string> (temp_args.at(i), $4));
+            temp_params.push_back(std::pair<std::string, std::string> (temp_args.at(i), $4));
         }
 
         temp_args.clear();
@@ -175,10 +176,17 @@ tasks:
 
 /* e.g. (:task deliver :parameters (?p - package ?l - location)) */
 task:
-    LPAREN COLON HDDL_TASK_KEYWORD STRING COLON HDDL_PARAMS_KEYWORD LPAREN task_params RPAREN RPAREN
+    LPAREN COLON HDDL_TASK_KEYWORD STRING COLON HDDL_PARAMS_KEYWORD LPAREN params RPAREN RPAREN {
+        Task temp_task;
+        temp_task.name = $4;
+        temp_task.params = temp_params;
+        hddl_parser.domain_.domain_tasks_.push_back(temp_task);
 
-task_params:
-    | task_params keys HYPHEN STRING
+        /* reset */
+        temp_params.clear();
+        temp_args.clear();
+        count = 0;
+    }
 
 methods:
     method | methods method
@@ -189,14 +197,9 @@ method:
 meth_params:
     | meth_params keys HYPHEN STRING
 
-/* :task (deliver ?p ?l2) */
-
 %%
 
 /* =============================
-
-args:
-    | STRING { std::cout << "\n\n" << $1 << "\n\n" << std::endl; } args
 
    Grammar definition ends here
 

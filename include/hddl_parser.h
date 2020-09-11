@@ -27,21 +27,12 @@ struct Predicate
     keyValueParams pred_params; // e.g. (not (robot_at -->?source))
 };
 
-/* Operator example
-(:durative-action goto_waypoint
-  :parameters (?r - robot ?source ?destination - location)
-  :duration (= ?duration 10)
-  :precondition (and
-                  (robot_at ?r ?source)
-                  (connected ?source ?destination)
-                )
-  :effect (and
-            (not (robot_at ?r ?source))
-            (robot_at ?r ?destination)
-            (decrease (navigation-capacity) 1)
-          )
-)
-*/
+struct Task
+{
+    std::string name;
+    keyValueParams params;
+};
+
 struct Operator
 {
     std::string name_;
@@ -61,7 +52,7 @@ struct HDDLDomain
     std::vector<std::string> domain_requirements_;
     std::map<std::string, std::string> domain_types_;
     std::vector<Predicate> domain_predicates_;
-    std::vector<std::string> domain_functions_;
+    std::vector<Task> domain_tasks_;
     std::vector<Operator> domain_operators_;
 };
 

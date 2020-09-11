@@ -47,6 +47,18 @@ int main (int argc, char *argv[])
 
             std::cout << "-" << std::endl;
         }
+
+        std::cout << "==domain tasks :" << std::endl;
+        for(auto it=hddl_parser.domain_.domain_tasks_.begin(); it!=hddl_parser.domain_.domain_tasks_.end(); it++) {
+            std::cout << "name : " << it->name << std::endl;
+
+            std::cout << "params :" << std::endl;
+            for(auto pit=it->params.begin(); pit!=it->params.end(); pit++) {
+                std::cout << "arg : " << pit->first << " type : " << pit->second << std::endl;
+            }
+
+            std::cout << "-" << std::endl;
+        }
     }
     else
         std::cout << "hddl parsing failed, errors encountered, fix your domain!" << std::endl;
