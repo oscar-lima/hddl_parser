@@ -26,15 +26,26 @@ int main (int argc, char *argv[])
     if(hddl_parser.parsing_ok())
     {
         // domain name
-        std::cout << "domain name: [" << hddl_parser.domain_.domain_name_ << "]" << std::endl;
+        std::cout << "==domain name: [" << hddl_parser.domain_.domain_name_ << "]" << std::endl;
 
         // use handy function to print std::vector<std::string> in convenient format
-        print_std_vector("domain requirements", hddl_parser.domain_.domain_requirements_);
+        print_std_vector("==domain requirements", hddl_parser.domain_.domain_requirements_);
 
-        std::cout << "domain types:" << std::endl;
-        for(auto it = hddl_parser.domain_.domain_types_.begin(); it != hddl_parser.domain_.domain_types_.end(); it++)
-        {
+        std::cout << "==domain types:" << std::endl;
+        for(auto it = hddl_parser.domain_.domain_types_.begin(); it!=hddl_parser.domain_.domain_types_.end(); it++) {
             std::cout << it->first << " isOfType " << it->second << std::endl;
+        }
+
+        std::cout << "==domain predicates :" << std::endl;
+        for(auto it=hddl_parser.domain_.domain_predicates_.begin(); it!=hddl_parser.domain_.domain_predicates_.end(); it++) {
+            std::cout << "name : " << it->name << std::endl;
+
+            std::cout << "params :" << std::endl;
+            for(auto pit=it->pred_params.begin(); pit!=it->pred_params.end(); pit++) {
+                std::cout << "arg : " << pit->first << " type : " << pit->second << std::endl;
+            }
+
+            std::cout << "-" << std::endl;
         }
     }
     else

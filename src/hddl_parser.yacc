@@ -32,6 +32,9 @@
     #include "hddl_parser.h"
 
     Predicate temp_predicate;
+    keyValueParams temp_params;
+    std::vector<std::string> temp_args;
+    int count = 0;
 }
 
 %token <int>
@@ -72,7 +75,7 @@
 /* =============================
 
    Grammar definition starts here
-   
+
 ================================*/
 
 %%
@@ -131,24 +134,39 @@ types_content:
 instances:
     | instances STRING { hddl_parser.domain_.temp_instances_.push_back($2);}
 
-// TODO: add types to some data structure ... type:
-//     instances HYPHEN type { hddl_parser.domain_.domain_types_.push_back($2); }
-
 /* (:predicates pred1 pred2) */
 predicates:
     LPAREN COLON HDDL_PRED_KEYWORD preds RPAREN
 
 /* allow multiple predicates, e.g. (robot_at ?r - robot ?l - location) */
 preds:
-    | preds LPAREN STRING predicate_params RPAREN { temp_predicate.name_ = $3; }
+    | preds LPAREN STRING predicate_params RPAREN {
+        temp_predicate.name = $3;
+        hddl_parser.domain_.domain_predicates_.push_back(temp_predicate);
+
+        /* reset */
+        temp_predicate.pred_params.clear();
+        temp_args.clear();
+        count = 0;
+    }
 
 /* allow multiple params,   e.g. ?r - robot ?source ?destination - location */
 predicate_params:
-    | predicate_params keys HYPHEN STRING
+    | predicate_params keys HYPHEN STRING {
+        for(int i=0; i < count; i++) {
+            temp_predicate.pred_params.push_back(std::pair<std::string, std::string> (temp_args.at(i), $4));
+        }
+
+        temp_args.clear();
+        count = 0;
+    }
 
 /* allow multiple keys, e.g. ?foo ?bar */
 keys:
-    | keys QM STRING
+    | keys QM STRING {
+        count++;
+        temp_args.push_back($3);
+    }
 
 /* allow multiple tasks e.g. task1 /n task2 /n task3 */
 tasks:

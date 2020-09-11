@@ -17,14 +17,14 @@ YY_DECL;
  *********************/
 
 // e.g. ?r - robot ?source ?destination - location -> [r, robot], [source, location], [destination, location]
-typedef std::vector<std::map<std::string, std::string> > keyValueParams;
+typedef std::vector<std::pair<std::string, std::string> > keyValueParams;
 
 // e.g. (not (robot_at ?source)), (robot_at ?destination)
 struct Predicate
 {
-    bool negated_; // e.g. (-->not (robot_at ?source))
-    std::string name_; // e.g. (not (-->robot_at ?source))
-    keyValueParams pred_params_; // e.g. (not (robot_at -->?source))
+    bool negated; // e.g. (-->not (robot_at ?source))
+    std::string name; // e.g. (not (-->robot_at ?source))
+    keyValueParams pred_params; // e.g. (not (robot_at -->?source))
 };
 
 /* Operator example
@@ -61,7 +61,7 @@ struct HDDLDomain
     std::vector<std::string> domain_requirements_;
     std::vector<std::string> temp_instances_;
     std::map<std::string, std::string> domain_types_;
-    Predicate domain_predicates_;
+    std::vector<Predicate> domain_predicates_;
     std::vector<std::string> domain_functions_;
     std::vector<Operator> domain_operators_;
 };
