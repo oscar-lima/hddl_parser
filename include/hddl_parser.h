@@ -41,6 +41,7 @@ struct Method
     std::string name;
     Params meth_params;
     Task task;
+    bool ordered_subtasks;
     std::vector<Task> subtasks;
 };
 

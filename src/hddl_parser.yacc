@@ -60,6 +60,7 @@
     HDDL_OP_DEC_KEYWORD     " decrease "
     HDDL_TASK_KEYWORD       " task "
     HDDL_ORD_SUBT_KEYWORD   " ordered-subtasks "
+    HDDL_SUBT_KEYWORD       " subtasks "
     HDDL_METHOD_KEYWORD     " method "
 
     LPAREN                  " ( "
@@ -206,7 +207,7 @@ method:
       ...
      )
      */
-    LPAREN COLON HDDL_METHOD_KEYWORD STRING params meth_task ordered_subtasks RPAREN {
+    LPAREN COLON HDDL_METHOD_KEYWORD STRING params meth_task subtasks RPAREN {
         temp_meth.name = $4;
         hddl_parser.domain_.domain_meths_.push_back(temp_meth);
 
@@ -233,9 +234,28 @@ simple_params:
         temp_args.push_back($3);
     }
 
-ordered_subtasks:
-    /*   :ordered-subtasks (and ... )*/
-    COLON HDDL_ORD_SUBT_KEYWORD LPAREN AND subts RPAREN
+subtasks:
+    /*   :ordered-subtasks (and ... )
+         or
+         :subtasks (and ... ) */
+    COLON ordered meth_sub
+/*
+ :ordered-subtasks (and
+      (get-to ?v ?l1)
+      (load ?v ?l1 ?p)
+      (get-to ?v ?l2)
+      (unload ?v ?l2 ?p))
+  )
+
+  :subtasks (drop ?v ?l ?p ?s1 ?s2)
+ */
+
+meth_sub:
+    /* :subtasks (drop ?v ?l ?p ?s1 ?s2) */
+    LPAREN AND subts RPAREN | subt
+
+ordered:
+    HDDL_ORD_SUBT_KEYWORD { temp_meth.ordered_subtasks = true; } | HDDL_SUBT_KEYWORD { temp_meth.ordered_subtasks = false; }
 
 subts:
     | subts subt

@@ -75,7 +75,11 @@ int main (int argc, char *argv[])
                 std::cout << "arg : " << *tpit << std::endl;
             }
 
-            std::cout << "ordered subtasks :" << std::endl;
+            std::cout << "subtasks :" << std::endl;
+            if(it->ordered_subtasks)
+                std::cout << "ordered subtasks : yes" << std::endl;
+            else
+                std::cout << "ordered subtasks : no" << std::endl;
             for(auto osit=it->subtasks.begin(); osit!=it->subtasks.end(); osit++) {
                 std::cout << "subtask name: " << osit->name << std::endl;
                 for(auto aosit=osit->task_params.params.begin(); aosit!=osit->task_params.params.end() ; aosit++) {
