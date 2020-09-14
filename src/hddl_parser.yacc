@@ -32,7 +32,7 @@
     #include "hddl_parser.h"
 
     Predicate temp_predicate;
-    keyValueParams temp_params;
+    Params temp_params;
     std::vector<std::string> temp_args;
     std::vector<std::string> temp_instances;
     int count = 0;
@@ -141,22 +141,26 @@ predicates:
 
 /* allow multiple predicates, e.g. (robot_at ?r - robot ?l - location) */
 preds:
-    | preds LPAREN STRING params RPAREN {
+    | preds LPAREN STRING only_params RPAREN {
         temp_predicate.name = $3;
         temp_predicate.pred_params = temp_params;
         hddl_parser.domain_.domain_predicates_.push_back(temp_predicate);
 
         /* reset */
-        temp_params.clear();
+        temp_params.params.clear();
+        temp_params.params_map.clear();
         temp_args.clear();
         count = 0;
     }
 
-/* allow multiple params,   e.g. ?r - robot ?source ?destination - location */
 params:
-    | params keys HYPHEN STRING {
+    COLON HDDL_PARAMS_KEYWORD LPAREN only_params RPAREN
+
+/* allow multiple params,   e.g. ?r - robot ?source ?destination - location */
+only_params:
+    | only_params keys HYPHEN STRING {
         for(int i=0; i < count; i++) {
-            temp_params.push_back(std::pair<std::string, std::string> (temp_args.at(i), $4));
+            temp_params.params_map[temp_args.at(i)] = $4;
         }
 
         temp_args.clear();
@@ -168,6 +172,7 @@ keys:
     | keys QM STRING {
         count++;
         temp_args.push_back($3);
+        temp_params.params.push_back($3);
     }
 
 /* allow multiple tasks e.g. task1 /n task2 /n task3 */
@@ -176,15 +181,15 @@ tasks:
 
 /* e.g. (:task deliver :parameters (?p - package ?l - location)) */
 task:
-    LPAREN COLON HDDL_TASK_KEYWORD STRING COLON HDDL_PARAMS_KEYWORD LPAREN params RPAREN RPAREN {
+    LPAREN COLON HDDL_TASK_KEYWORD STRING params RPAREN {
         Task temp_task;
         temp_task.name = $4;
-        temp_task.params = temp_params;
+        temp_task.task_params = temp_params;
         hddl_parser.domain_.domain_tasks_.push_back(temp_task);
 
         /* reset */
-        temp_params.clear();
-        temp_args.clear();
+        temp_params.params.clear();
+        temp_params.params_map.clear();
         count = 0;
     }
 
@@ -192,11 +197,25 @@ methods:
     method | methods method
 
 method:
-    LPAREN COLON HDDL_METHOD_KEYWORD COLON HDDL_PARAMS_KEYWORD LPAREN meth_params RPAREN RPAREN
+    /*
+     (:method
+      :parameters (?p - package ?l1 ?l2 - location ?v - vehicle)
+      :task (deliver ?p ?l2)
+      ...
+     )
+     */
+    LPAREN COLON HDDL_METHOD_KEYWORD params meth_header RPAREN
 
-meth_params:
-    | meth_params keys HYPHEN STRING
+meth_header:
+    /* :task (deliver ?p ?l2) */
+    COLON HDDL_TASK_KEYWORD LPAREN STRING simple_params RPAREN {
+        std::cout << "method name : " << $4 << std::endl;
+    }
 
+simple_params:
+    | simple_params QM STRING {
+        std::cout << "simple param : " << $3 << std::endl;
+    }
 %%
 
 /* =============================

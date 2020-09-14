@@ -41,8 +41,8 @@ int main (int argc, char *argv[])
             std::cout << "name : " << it->name << std::endl;
 
             std::cout << "params :" << std::endl;
-            for(auto pit=it->pred_params.begin(); pit!=it->pred_params.end(); pit++) {
-                std::cout << "arg : " << pit->first << " type : " << pit->second << std::endl;
+            for(auto pit=it->pred_params.params.begin(); pit!=it->pred_params.params.end(); pit++) {
+                std::cout << "arg : " << *pit << " type : " << it->pred_params.params_map[*pit] << std::endl;
             }
 
             std::cout << "-" << std::endl;
@@ -53,8 +53,8 @@ int main (int argc, char *argv[])
             std::cout << "name : " << it->name << std::endl;
 
             std::cout << "params :" << std::endl;
-            for(auto pit=it->params.begin(); pit!=it->params.end(); pit++) {
-                std::cout << "arg : " << pit->first << " type : " << pit->second << std::endl;
+            for(auto pit=it->task_params.params.begin(); pit!=it->task_params.params.end(); pit++) {
+                std::cout << "arg : " << *pit << " type : " << it->task_params.params_map[*pit] << std::endl;
             }
 
             std::cout << "-" << std::endl;

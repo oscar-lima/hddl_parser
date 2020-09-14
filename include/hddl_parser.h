@@ -16,30 +16,30 @@ YY_DECL;
  *
  *********************/
 
-// e.g. ?r - robot ?source ?destination - location -> [r, robot], [source, location], [destination, location]
-typedef std::vector<std::pair<std::string, std::string> > keyValueParams;
+struct Params
+{
+    std::vector<std::string> params; // args without types
+    std::map<std::string, std::string> params_map; // handy arg - type dictionary
+};
 
 // e.g. (not (robot_at ?source)), (robot_at ?destination)
 struct Predicate
 {
     bool negated; // e.g. (-->not (robot_at ?source))
     std::string name; // e.g. (not (-->robot_at ?source))
-    keyValueParams pred_params; // e.g. (not (robot_at -->?source))
+    Params pred_params; // e.g. (not (robot_at -->?source))
 };
 
 struct Task
 {
     std::string name;
-    keyValueParams params;
+    Params task_params;
 };
 
-struct Operator
+struct Method
 {
-    std::string name_;
-    keyValueParams params_;
-    int duration_;
-    std::vector<Predicate> preconditions_;
-    std::vector<Predicate> effects_;
+    std::string name;
+    Params meth_params;
 };
 
 // stores a full hddl domain model
@@ -53,7 +53,6 @@ struct HDDLDomain
     std::map<std::string, std::string> domain_types_;
     std::vector<Predicate> domain_predicates_;
     std::vector<Task> domain_tasks_;
-    std::vector<Operator> domain_operators_;
 };
 
 /*********************
