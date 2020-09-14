@@ -40,6 +40,8 @@ struct Method
 {
     std::string name;
     Params meth_params;
+    Task task;
+    std::vector<Task> subtasks;
 };
 
 // stores a full hddl domain model
@@ -53,6 +55,7 @@ struct HDDLDomain
     std::map<std::string, std::string> domain_types_;
     std::vector<Predicate> domain_predicates_;
     std::vector<Task> domain_tasks_;
+    std::vector<Method> domain_meths_;
 };
 
 /*********************

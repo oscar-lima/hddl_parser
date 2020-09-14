@@ -67,6 +67,7 @@ comments ;.*
 "types"             return yy::parser::make_HDDL_TYPES_KEYWORD(yytext, loc);
 "predicates"        return yy::parser::make_HDDL_PRED_KEYWORD(yytext, loc);
 "task"              return yy::parser::make_HDDL_TASK_KEYWORD(yytext, loc);
+"ordered-subtasks"  return yy::parser::make_HDDL_ORD_SUBT_KEYWORD(yytext, loc);
 "method"            return yy::parser::make_HDDL_METHOD_KEYWORD(yytext, loc);
 "parameters"        return yy::parser::make_HDDL_PARAMS_KEYWORD(yytext, loc);
 "duration"          return yy::parser::make_HDDL_OP_DUR_KEYWORD(yytext, loc);

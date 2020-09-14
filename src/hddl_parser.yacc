@@ -33,6 +33,7 @@
 
     Predicate temp_predicate;
     Params temp_params;
+    Method temp_meth;
     std::vector<std::string> temp_args;
     std::vector<std::string> temp_instances;
     int count = 0;
@@ -58,6 +59,7 @@
     HDDL_OP_EFF_KEYWORD     " effect "
     HDDL_OP_DEC_KEYWORD     " decrease "
     HDDL_TASK_KEYWORD       " task "
+    HDDL_ORD_SUBT_KEYWORD   " ordered-subtasks "
     HDDL_METHOD_KEYWORD     " method "
 
     LPAREN                  " ( "
@@ -204,18 +206,50 @@ method:
       ...
      )
      */
-    LPAREN COLON HDDL_METHOD_KEYWORD params meth_header RPAREN
+    LPAREN COLON HDDL_METHOD_KEYWORD STRING params meth_task ordered_subtasks RPAREN {
+        temp_meth.name = $4;
+        hddl_parser.domain_.domain_meths_.push_back(temp_meth);
 
-meth_header:
+        temp_meth.subtasks.clear();
+    }
+
+meth_task:
     /* :task (deliver ?p ?l2) */
     COLON HDDL_TASK_KEYWORD LPAREN STRING simple_params RPAREN {
-        std::cout << "method name : " << $4 << std::endl;
+        /* parameters */
+        temp_meth.meth_params = temp_params;
+        temp_meth.task.name = $4;
+        temp_meth.task.task_params.params = temp_args;
+
+        /* reset */
+        temp_params.params.clear();
+        temp_params.params_map.clear();
+        temp_args.clear();
+        count = 0;
     }
 
 simple_params:
     | simple_params QM STRING {
-        std::cout << "simple param : " << $3 << std::endl;
+        temp_args.push_back($3);
     }
+
+ordered_subtasks:
+    /*   :ordered-subtasks (and ... )*/
+    COLON HDDL_ORD_SUBT_KEYWORD LPAREN AND subts RPAREN
+
+subts:
+    | subts subt
+
+subt:
+    LPAREN STRING simple_params RPAREN {
+        Task t;
+        t.name = $2;
+        t.task_params.params = temp_args;
+        temp_meth.subtasks.push_back(t);
+
+        temp_args.clear();
+    }
+
 %%
 
 /* =============================

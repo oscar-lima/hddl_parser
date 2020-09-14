@@ -59,6 +59,32 @@ int main (int argc, char *argv[])
 
             std::cout << "-" << std::endl;
         }
+
+        std::cout << "==domain methods :" << std::endl;
+        for(auto it=hddl_parser.domain_.domain_meths_.begin(); it!=hddl_parser.domain_.domain_meths_.end(); it++) {
+            std::cout << "name : " << it->name << std::endl;
+
+            std::cout << "params :" << std::endl;
+            for(auto pit=it->meth_params.params.begin(); pit!=it->meth_params.params.end(); pit++) {
+                std::cout << "arg : " << *pit << " type : " << it->meth_params.params_map[*pit] << std::endl;
+            }
+
+            std::cout << "task name : " << it->task.name << std::endl;
+            std::cout << "task params :" << std::endl;
+            for(auto tpit=it->task.task_params.params.begin(); tpit!=it->task.task_params.params.end(); tpit++) {
+                std::cout << "arg : " << *tpit << std::endl;
+            }
+
+            std::cout << "ordered subtasks :" << std::endl;
+            for(auto osit=it->subtasks.begin(); osit!=it->subtasks.end(); osit++) {
+                std::cout << "subtask name: " << osit->name << std::endl;
+                for(auto aosit=osit->task_params.params.begin(); aosit!=osit->task_params.params.end() ; aosit++) {
+                    std::cout << "arg : " << *aosit << std::endl;
+                }
+            }
+
+            std::cout << "-" << std::endl;
+        }
     }
     else
         std::cout << "hddl parsing failed, errors encountered, fix your domain!" << std::endl;

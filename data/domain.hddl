@@ -15,15 +15,23 @@
   )
 
   (:task deliver :parameters (?p - package ?l - location))
-  (:task deliver :parameters (?v - robot ?l - location))
+  (:task get-to :parameters (?v - vehicle ?l - location))
+  (:task load :parameters (?v - vehicle ?l - location ?p - package))
+  (:task unload :parameters (?v - vehicle ?l - location ?p - package))
 
-  (:method
-      :parameters (?p - package ?l1 ?l2 - location ?v - vehicle)
-    ;  :task (deliver ?p ?l2)
-    ;  :ordered-subtasks (and
-    ;  (get-to ?v ?l1)
-    ;  (load ?v ?l1 ?p)
-    ;  (get-to ?v ?l2)
-    ;  (unload ?v ?l2 ?p))
+  (:method m-deliver
+    :parameters (?p - package ?l1 ?l2 - location ?v - vehicle)
+    :task (deliver ?p ?l2)
+     :ordered-subtasks (and
+      (get-to ?v ?l1)
+      (load ?v ?l1 ?p)
+      (get-to ?v ?l2)
+      (unload ?v ?l2 ?p))
   )
+  
+  ;(:method m-unload
+  ;  :parameters (?v - vehicle ?l - location ?p - package ?s1 ?s2 - capacity-number)
+  ;  :task (unload ?v ?l ?p)
+  ;  :subtasks (drop ?v ?l ?p ?s1 ?s2)
+  ;)
 )
