@@ -51,7 +51,7 @@
     PROBLEM                 " problem "
 
     HDDL_REQ_KEYWORD        " requirements "
-    HDDL_REQ_PARAM          " typing, hola, htn, htn-method-prec "
+    HDDL_REQ_PARAM          " typing, htn, htn-method-prec "
 
     HDDL_TYPES_KEYWORD      " types "
     HDDL_PRED_KEYWORD       " predicates "
@@ -158,14 +158,14 @@ hpreds:
         /* reset */
         temp_params.params.clear();
         temp_params.params_map.clear();
-        temp_args.clear();
         count = 0;
     }
 
+/* :parameters (?p - package ?l1 ?l2 - location ?v - vehicle) */
 params:
     COLON HDDL_PARAMS_KEYWORD LPAREN only_params RPAREN
 
-/* allow multiple params,   e.g. ?r - robot ?source ?destination - location */
+/* ?p - package ?l1 ?l2 - location ?v - vehicle */
 only_params:
     | only_params keys HYPHEN STRING {
         for(int i=0; i < count; i++) {
@@ -215,24 +215,23 @@ method:
      */
     LPAREN COLON HDDL_METHOD_KEYWORD STRING params meth_task subtasks RPAREN {
         temp_meth.name = $4;
+        temp_meth.meth_params = temp_params;
         hddl_parser.domain_.domain_meths_.push_back(temp_meth);
 
         temp_meth.subtasks.clear();
+
+        /* reset */
+        temp_params.params.clear();
+        temp_params.params_map.clear();
+        count = 0;
     }
 
 meth_task:
     /* :task (deliver ?p ?l2) */
     COLON HDDL_TASK_KEYWORD LPAREN STRING simple_params RPAREN {
         /* parameters */
-        temp_meth.meth_params = temp_params;
         temp_meth.task.name = $4;
         temp_meth.task.task_params.params = temp_args;
-
-        /* reset */
-        temp_params.params.clear();
-        temp_params.params_map.clear();
-        temp_args.clear();
-        count = 0;
     }
 
 simple_params:
@@ -272,15 +271,14 @@ actions:
 action:
 /* (:action drive
     :parameters (?v - vehicle ?l1 ?l2 - location) */
-    LPAREN COLON HDDL_ACTION_KEYWORD STRING params preconditions effects RPAREN {
+    LPAREN COLON HDDL_ACTION_KEYWORD STRING params {temp_action.action_params = temp_params;} preconditions effects RPAREN {
         temp_action.name = $4;
-        temp_action.action_params = temp_params;
+
         hddl_parser.domain_.domain_actions_.push_back(temp_action);
 
         /* reset params */
         temp_params.params.clear();
         temp_params.params_map.clear();
-        temp_action.action_params.params.clear();
         count = 0;
     }
 

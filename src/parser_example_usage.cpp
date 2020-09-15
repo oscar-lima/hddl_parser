@@ -21,7 +21,9 @@ int main (int argc, char *argv[])
     HDDLParser hddl_parser;
 
     // parse sample file shipped alongside with this code
-    hddl_parser.parse("../data/domain.hddl");
+    // hddl_parser.parse("../data/domain.hddl");
+    // hddl_parser.parse("../data/transport_domain.hddl");
+    hddl_parser.parse("../data/transport_domain_empty_prec.hddl");
 
     if(hddl_parser.parsing_ok())
     {
