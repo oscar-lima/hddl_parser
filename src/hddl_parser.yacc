@@ -289,7 +289,7 @@ preconditions:
  :precondition (and
         (at ?v ?l1)
         (road ?l1 ?l2)) */
-    COLON HDDL_OP_PREC_KEYWORD pred_body {
+    COLON HDDL_OP_PREC_KEYWORD LPAREN RPAREN | COLON HDDL_OP_PREC_KEYWORD pred_body {
         temp_action.preconditions = temp_pred_vector;
         temp_pred_vector.clear();
     }
@@ -299,7 +299,7 @@ effects:
  :effect (and
         (not (at ?v ?l1))
         (at ?v ?l2)) */
-    COLON HDDL_OP_EFF_KEYWORD pred_body {
+    COLON HDDL_OP_EFF_KEYWORD LPAREN RPAREN | COLON HDDL_OP_EFF_KEYWORD pred_body {
         temp_action.effects = temp_pred_vector;
         temp_pred_vector.clear();
     }
