@@ -95,12 +95,7 @@
 
   (:action drop
     :parameters (?v - vehicle ?l - location ?p - package ?s1 ?s2 - capacity-number)
-    :precondition (and
-        (at ?v ?l)
-        (in ?p ?v)
-        (capacity-predecessor ?s1 ?s2)
-        (capacity ?v ?s1)
-      )
+    :precondition ()
     :effect (and
         (not (in ?p ?v))
         (at ?p ?l)
