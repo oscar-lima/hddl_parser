@@ -232,6 +232,7 @@ meth_task:
         /* parameters */
         temp_meth.task.name = $4;
         temp_meth.task.task_params.params = temp_args;
+        temp_args.clear();
     }
 
 simple_params:
