@@ -276,6 +276,9 @@ action:
 
         hddl_parser.domain_.domain_actions_.push_back(temp_action);
 
+        temp_action.effects.clear();
+        temp_action.preconditions.clear();
+
         /* reset params */
         temp_params.params.clear();
         temp_params.params_map.clear();
