@@ -34,4 +34,14 @@
     :task (unload ?v ?l ?p)
     :subtasks (drop ?v ?l ?p ?s1 ?s2)
   )
+
+  (:action drive
+    :parameters (?v - vehicle ?l1 ?l2 - location)
+    :precondition (and
+        (at ?v ?l1)
+        (road ?l1 ?l2))
+    :effect (and
+        (not (at ?v ?l1))
+        (at ?v ?l2))
+  )
 )

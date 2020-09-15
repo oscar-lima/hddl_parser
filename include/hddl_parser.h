@@ -45,6 +45,14 @@ struct Method
     std::vector<Task> subtasks;
 };
 
+struct Action
+{
+    std::string name;
+    Params action_params;
+    std::vector<Predicate> preconditions;
+    std::vector<Predicate> effects;
+};
+
 // stores a full hddl domain model
 struct HDDLDomain
 {
@@ -57,6 +65,7 @@ struct HDDLDomain
     std::vector<Predicate> domain_predicates_;
     std::vector<Task> domain_tasks_;
     std::vector<Method> domain_meths_;
+    std::vector<Action> domain_actions_;
 };
 
 /*********************

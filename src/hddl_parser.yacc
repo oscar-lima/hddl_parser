@@ -32,8 +32,10 @@
     #include "hddl_parser.h"
 
     Predicate temp_predicate;
+    std::vector<Predicate> temp_pred_vector;
     Params temp_params;
     Method temp_meth;
+    Action temp_action;
     std::vector<std::string> temp_args;
     std::vector<std::string> temp_instances;
     int count = 0;
@@ -62,6 +64,7 @@
     HDDL_ORD_SUBT_KEYWORD   " ordered-subtasks "
     HDDL_SUBT_KEYWORD       " subtasks "
     HDDL_METHOD_KEYWORD     " method "
+    HDDL_ACTION_KEYWORD     " action "
 
     LPAREN                  " ( "
     COLON                   " : "
@@ -105,6 +108,9 @@ hddl_main_structure:
     /* (:method m-deliver ... */
     methods
 
+    /* (:action drive */
+    actions
+
     /* final closing parenthesis */
     RPAREN
 
@@ -140,11 +146,11 @@ instances:
 
 /* (:predicates pred1 pred2) */
 predicates:
-    LPAREN COLON HDDL_PRED_KEYWORD preds RPAREN
+    LPAREN COLON HDDL_PRED_KEYWORD hpreds RPAREN
 
 /* allow multiple predicates, e.g. (robot_at ?r - robot ?l - location) */
-preds:
-    | preds LPAREN STRING only_params RPAREN {
+hpreds:
+    | hpreds LPAREN STRING only_params RPAREN {
         temp_predicate.name = $3;
         temp_predicate.pred_params = temp_params;
         hddl_parser.domain_.domain_predicates_.push_back(temp_predicate);
@@ -190,7 +196,7 @@ task:
         temp_task.task_params = temp_params;
         hddl_parser.domain_.domain_tasks_.push_back(temp_task);
 
-        /* reset */
+        /* reset params */
         temp_params.params.clear();
         temp_params.params_map.clear();
         count = 0;
@@ -239,16 +245,6 @@ subtasks:
          or
          :subtasks (and ... ) */
     COLON ordered meth_sub
-/*
- :ordered-subtasks (and
-      (get-to ?v ?l1)
-      (load ?v ?l1 ?p)
-      (get-to ?v ?l2)
-      (unload ?v ?l2 ?p))
-  )
-
-  :subtasks (drop ?v ?l ?p ?s1 ?s2)
- */
 
 meth_sub:
     /* :subtasks (drop ?v ?l ?p ?s1 ?s2) */
@@ -266,6 +262,77 @@ subt:
         t.name = $2;
         t.task_params.params = temp_args;
         temp_meth.subtasks.push_back(t);
+
+        temp_args.clear();
+    }
+
+actions:
+    action | actions action
+
+action:
+/* (:action drive
+    :parameters (?v - vehicle ?l1 ?l2 - location) */
+    LPAREN COLON HDDL_ACTION_KEYWORD STRING params preconditions effects RPAREN {
+        temp_action.name = $4;
+        temp_action.action_params = temp_params;
+        hddl_parser.domain_.domain_actions_.push_back(temp_action);
+
+        /* reset params */
+        temp_params.params.clear();
+        temp_params.params_map.clear();
+        temp_action.action_params.params.clear();
+        count = 0;
+    }
+
+preconditions:
+/*
+ :precondition (and
+        (at ?v ?l1)
+        (road ?l1 ?l2)) */
+    COLON HDDL_OP_PREC_KEYWORD pred_body {
+        temp_action.preconditions = temp_pred_vector;
+        temp_pred_vector.clear();
+    }
+
+effects:
+/*
+ :effect (and
+        (not (at ?v ?l1))
+        (at ?v ?l2)) */
+    COLON HDDL_OP_EFF_KEYWORD pred_body {
+        temp_action.effects = temp_pred_vector;
+        temp_pred_vector.clear();
+    }
+
+pred_body:
+    LPAREN AND preds RPAREN | pred
+
+preds:
+    pred | preds pred
+
+pred:
+    positive_pred | negative_pred
+
+positive_pred:
+    LPAREN STRING keys RPAREN {
+        temp_predicate.negated = false;
+
+        temp_predicate.name = $2;
+        temp_predicate.pred_params.params = temp_args;
+
+        temp_pred_vector.push_back(temp_predicate);
+
+        temp_args.clear();
+    }
+
+negative_pred:
+    LPAREN NOT LPAREN STRING keys RPAREN RPAREN {
+        temp_predicate.negated = true;
+
+        temp_predicate.name = $4;
+        temp_predicate.pred_params.params = temp_args;
+
+        temp_pred_vector.push_back(temp_predicate);
 
         temp_args.clear();
     }

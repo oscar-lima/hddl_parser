@@ -70,6 +70,7 @@ comments ;.*
 "ordered-subtasks"  return yy::parser::make_HDDL_ORD_SUBT_KEYWORD(yytext, loc);
 "subtasks"          return yy::parser::make_HDDL_SUBT_KEYWORD(yytext, loc);
 "method"            return yy::parser::make_HDDL_METHOD_KEYWORD(yytext, loc);
+"action"            return yy::parser::make_HDDL_ACTION_KEYWORD(yytext, loc);
 "parameters"        return yy::parser::make_HDDL_PARAMS_KEYWORD(yytext, loc);
 "duration"          return yy::parser::make_HDDL_OP_DUR_KEYWORD(yytext, loc);
 "precondition"      return yy::parser::make_HDDL_OP_PREC_KEYWORD(yytext, loc);

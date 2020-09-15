@@ -89,6 +89,44 @@ int main (int argc, char *argv[])
 
             std::cout << "-" << std::endl;
         }
+
+        std::cout << "==domain actions :" << std::endl;
+        for(auto it=hddl_parser.domain_.domain_actions_.begin(); it!=hddl_parser.domain_.domain_actions_.end(); it++) {
+            std::cout << "name : " << it->name << std::endl;
+
+            std::cout << "params :" << std::endl;
+            for(auto pit=it->action_params.params.begin(); pit!=it->action_params.params.end(); pit++) {
+                std::cout << "arg : " << *pit << " type : " << it->action_params.params_map[*pit] << std::endl;
+            }
+
+            std::cout << "preconditions :" << std::endl;
+            for(auto pit=it->preconditions.begin(); pit!=it->preconditions.end(); pit++) {
+                std::cout << "prec name : " << pit->name << std::endl;
+                if(pit->negated)
+                    std::cout << "negative : yes" << std::endl;
+                else
+                    std::cout << "negative : no" << std::endl;
+                for(auto pait=pit->pred_params.params.begin(); pait!=pit->pred_params.params.end(); pait++) {
+                    std::cout << "arg : " << *pait << std::endl;
+                }
+                std::cout << "..." << std::endl;
+            }
+
+            std::cout << "effects :" << std::endl;
+            for(auto eit=it->effects.begin(); eit!=it->effects.end(); eit++) {
+                std::cout << "effect name : " << eit->name << std::endl;
+                if(eit->negated)
+                    std::cout << "negative : yes" << std::endl;
+                else
+                    std::cout << "negative : no" << std::endl;
+                for(auto pait=eit->pred_params.params.begin(); pait!=eit->pred_params.params.end(); pait++) {
+                    std::cout << "arg : " << *pait << std::endl;
+                }
+                std::cout << "..." << std::endl;
+            }
+
+            std::cout << "-" << std::endl;
+        }
     }
     else
         std::cout << "hddl parsing failed, errors encountered, fix your domain!" << std::endl;
